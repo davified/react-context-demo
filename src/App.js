@@ -41,7 +41,15 @@ class App extends Component {
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
+            <MyContext.Consumer>
+              {value => {
+                const welcomeMessage = value.viewer
+                  ? "Welcome " + value.viewer
+                  : "Welcome to React";
+
+                return <h1 className="App-title">{welcomeMessage}</h1>;
+              }}
+            </MyContext.Consumer>
           </header>
           <div className="App-intro">
             <Nav />
