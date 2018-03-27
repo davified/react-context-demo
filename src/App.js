@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
-class App extends Component {
+const MyContext = React.createContext();
+
+class Provider extends Component {
   constructor() {
     super();
     this.state = {
@@ -17,22 +19,35 @@ class App extends Component {
   logOut = name => {
     this.setState({ viewer: null });
   };
-
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <div className="App-intro">
-          <Nav
-            viewer={this.state.viewer}
-            logIn={this.logIn.bind(this)}
-            logOut={this.logOut.bind(this)}
-          />
+      <MyContext.Provider
+        value={{
+          viewer: this.state.viewer,
+          logIn: this.logIn,
+          logOut: this.logOut
+        }}
+      >
+        {this.props.children}
+      </MyContext.Provider>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Provider>
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h1 className="App-title">Welcome to React</h1>
+          </header>
+          <div className="App-intro">
+            <Nav />
+          </div>
         </div>
-      </div>
+      </Provider>
     );
   }
 }
@@ -40,31 +55,41 @@ class App extends Component {
 class LoginForm extends Component {
   render() {
     return (
-      <div>
-        {this.props.viewer ? (
-          <div>
-            <h3>Logged in as: {this.props.viewer}</h3>
-            <button onClick={this.props.logOut.bind(this)}>Log out</button>
-          </div>
-        ) : (
-          <div>
-            <input placeholder="name please" ref={r => (this.inputRef = r)} />
-            <input
-              type="submit"
-              value="Log In"
-              onClick={() => {
-                this.props.logIn(this.inputRef.value);
-              }}
-            />
-          </div>
-        )}
-      </div>
+      <MyContext.Consumer>
+        {value => {
+          const { viewer, logIn, logOut } = value;
+          return (
+            <div>
+              {viewer ? (
+                <div>
+                  <h3>Logged in as: {viewer}</h3>
+                  <button onClick={logOut.bind(this)}>Log out</button>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    placeholder="name please"
+                    ref={r => (this.inputRef = r)}
+                  />
+                  <input
+                    type="submit"
+                    value="Log In"
+                    onClick={() => {
+                      logIn(this.inputRef.value);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        }}
+      </MyContext.Consumer>
     );
   }
 }
 
-const Nav = props => {
-  return <LoginForm {...props} />;
+const Nav = () => {
+  return <LoginForm />;
 };
 
 export default App;
