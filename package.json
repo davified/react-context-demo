@@ -1,13 +1,16 @@
 {
   "name": "react-context-demo",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
-    "react": "next",
-    "react-dom": "next"
+    "prop-types": "^15.6.2",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-test-renderer": "^16.5.2"
   },
   "devDependencies": {
-    "react-scripts": "1.1.1"
+    "jest-dom": "^1.12.1",
+    "react-scripts": "1.1.0",
+    "react-testing-library": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
